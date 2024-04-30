@@ -17,6 +17,7 @@
 package com.ginkage.gamepad.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHidDevice;
@@ -26,11 +27,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.annotation.MainThread;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
+
 import android.util.Log;
+
 import com.ginkage.gamepad.R;
 import com.ginkage.gamepad.bluetooth.HidDataSender;
 import com.ginkage.gamepad.bluetooth.HidDataSender.ProfileListener;
@@ -93,10 +98,11 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
         initAvailableDevices();
         registerStateReceiver();
 
-        if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[] {Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST);
+        if (context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                context.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+            requestPermissions(permissions, PERMISSION_REQUEST);
         }
     }
 
@@ -131,6 +137,7 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
         super.onDestroy();
     }
 
+    @SuppressLint("MissingPermission")
     protected void initScanDevices(Preference pref) {
         if (bluetoothAdapter.isDiscovering()) {
             pref.setEnabled(false);
@@ -148,6 +155,7 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
         clearAvailableDevices();
     }
 
+    @SuppressLint("MissingPermission")
     protected BluetoothDevicePreference addAvailableDevice(BluetoothDevice device) {
         final BluetoothDevicePreference pref = findOrAllocateDevicePreference(device);
         if (device.getBondState() == BluetoothDevice.BOND_NONE) {
@@ -158,6 +166,7 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
     }
 
     /** Re-examine the device and update if necessary. */
+    @SuppressLint("MissingPermission")
     protected void updateAvailableDevice(BluetoothDevice device) {
         final BluetoothDevicePreference pref = findDevicePreference(device);
         if (pref != null) {
@@ -207,6 +216,7 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void startDiscovery() {
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
@@ -215,6 +225,7 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
         initiateScanDevices.setEnabled(false);
     }
 
+    @SuppressLint("MissingPermission")
     private void stopDiscovery() {
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();

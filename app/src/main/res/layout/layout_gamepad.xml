@@ -111,12 +111,6 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline_b2"
       app:layout_constraintStart_toStartOf="@+id/guideline_vert_75"
       app:layout_constraintTop_toTopOf="@+id/guideline_h3"/>
-  <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/guideline_vert_25"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:layout_constraintGuide_percent="0.25"/>
 
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline_horz"
@@ -124,6 +118,14 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.36"/>
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline_vert_25"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.25" />
+
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline_vert_50"
       android:layout_width="wrap_content"
@@ -202,6 +204,7 @@
       android:id="@+id/stick_right"
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:layout_marginBottom="8dp"
       android:adjustViewBounds="false"
       android:src="@drawable/background_circle"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -209,7 +212,7 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline_vert_75"
       app:layout_constraintStart_toStartOf="@+id/guideline_vert_50"
       app:layout_constraintTop_toTopOf="@+id/guideline_horz"
-      app:layout_constraintVertical_bias="0.0"/>
+      app:layout_constraintVertical_bias="1.0"/>
 
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline_b1"
@@ -340,12 +343,13 @@
       android:id="@+id/button_r3"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:layout_marginBottom="8dp"
+      android:layout_marginBottom="0dp"
       android:layout_marginEnd="32dp"
       android:layout_marginStart="32dp"
+      android:layout_marginTop="0dp"
       android:text="R3"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/stick_right"
       app:layout_constraintEnd_toStartOf="@+id/guideline_vert_75"
       app:layout_constraintStart_toStartOf="@+id/guideline_vert_50"
-      app:layout_constraintTop_toBottomOf="@+id/stick_right"/>
+      app:layout_constraintTop_toTopOf="@+id/guideline_horz" />
 </androidx.constraintlayout.widget.ConstraintLayout>

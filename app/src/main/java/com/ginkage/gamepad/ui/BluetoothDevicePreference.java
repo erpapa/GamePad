@@ -18,6 +18,7 @@ package com.ginkage.gamepad.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
@@ -60,6 +61,7 @@ class BluetoothDevicePreference extends DialogPreference {
     }
 
     /** Present when the device is available */
+    @SuppressLint("MissingPermission")
     @Override
     protected void onClick() {
         if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
@@ -72,7 +74,7 @@ class BluetoothDevicePreference extends DialogPreference {
             connectionState = hidDeviceProfile.getConnectionState(device);
             setPositiveButtonText(
                     connectionState == BluetoothProfile.STATE_CONNECTED
-                                    || connectionState == BluetoothProfile.STATE_CONNECTING
+                            || connectionState == BluetoothProfile.STATE_CONNECTING
                             ? R.string.pref_bluetooth_disconnect
                             : R.string.pref_bluetooth_connect);
 
@@ -82,11 +84,11 @@ class BluetoothDevicePreference extends DialogPreference {
                             : R.string.pref_bluetooth_forget);
 
             super.onClick();
-      } else {
+        } else {
             // Discovery may be in progress so cancel discovery before attempting to bond.
             stopDiscovery();
             device.createBond();
-      }
+        }
     }
 
     void onDialogClosed(boolean positiveResult) {
@@ -108,6 +110,7 @@ class BluetoothDevicePreference extends DialogPreference {
     }
 
     /** Request to unpair and remove the bond */
+    @SuppressLint("MissingPermission")
     private void requestUnpair() {
         final int state = device.getBondState();
 
@@ -127,20 +130,23 @@ class BluetoothDevicePreference extends DialogPreference {
                                     Log.w(TAG, "Unpair request rejected straight away.");
                                 }
                             })
-                    .setNegativeButton(R.string.generic_cancel, (dialog, which) -> {})
+                    .setNegativeButton(R.string.generic_cancel, (dialog, which) -> {
+                    })
                     .show();
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void stopDiscovery() {
         final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter != null) {
             if (adapter.isDiscovering()) {
                 adapter.cancelDiscovery();
             }
-      }
+        }
     }
 
+    @SuppressLint("MissingPermission")
     void updateName() {
         String name = device.getName();
         if (TextUtils.isEmpty(name)) {
@@ -153,6 +159,7 @@ class BluetoothDevicePreference extends DialogPreference {
     }
 
     /** Re-examine the device and update the bond state. */
+    @SuppressLint("MissingPermission")
     void updateBondState() {
         switch (device.getBondState()) {
             case BluetoothDevice.BOND_BONDED:
@@ -169,6 +176,7 @@ class BluetoothDevicePreference extends DialogPreference {
         notifyChanged();
     }
 
+    @SuppressLint("MissingPermission")
     private void updateClass() {
         if (device.getBluetoothClass() == null) {
             return;

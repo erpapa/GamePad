@@ -16,6 +16,7 @@
 
 package com.ginkage.gamepad.ui;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHidDevice;
@@ -74,6 +75,7 @@ public class PairedDevicesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    @SuppressLint("MissingPermission")
     public void onStart() {
         super.onStart();
         if (!bluetoothAdapter.isEnabled()) {
@@ -120,6 +122,7 @@ public class PairedDevicesFragment extends PreferenceFragmentCompat {
         }
     }
 
+    @SuppressLint("MissingPermission")
     protected void updateBondedDevices() {
         for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
             updatePreferenceBondState(device);
@@ -127,6 +130,7 @@ public class PairedDevicesFragment extends PreferenceFragmentCompat {
     }
 
     /** Examine the bond state of the device and update preference if necessary. */
+    @SuppressLint("MissingPermission")
     @VisibleForTesting
     void updatePreferenceBondState(final BluetoothDevice device) {
         final BluetoothDevicePreference pref = findOrAllocateDevicePreference(device);
@@ -188,6 +192,7 @@ public class PairedDevicesFragment extends PreferenceFragmentCompat {
         getContext().unregisterReceiver(bluetoothStateReceiver);
     }
 
+    @SuppressLint("MissingPermission")
     private final ProfileListener profileListener =
             new ProfileListener() {
                 @Override
