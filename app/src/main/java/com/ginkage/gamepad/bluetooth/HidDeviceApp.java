@@ -18,6 +18,7 @@ package com.ginkage.gamepad.bluetooth;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHidDevice;
 import android.bluetooth.BluetoothProfile;
@@ -76,6 +77,7 @@ public class HidDeviceApp
                     HidDeviceApp.this.onConnectionStateChanged(device, state);
                 }
 
+                @SuppressLint("MissingPermission")
                 @Override
                 @BinderThread
                 public void onGetReport(
@@ -92,6 +94,7 @@ public class HidDeviceApp
                     }
                 }
 
+                @SuppressLint("MissingPermission")
                 @Override
                 @BinderThread
                 public void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {
@@ -110,6 +113,7 @@ public class HidDeviceApp
      *
      * @param proxy Interface for managing the paired HID Host devices and sending the data.
      */
+    @SuppressLint("MissingPermission")
     @MainThread
     void registerApp(BluetoothHidDevice proxy) {
         this.proxy = checkNotNull(proxy);
@@ -122,6 +126,7 @@ public class HidDeviceApp
     }
 
     /** Unregister the HID Device's SDP record. */
+    @SuppressLint("MissingPermission")
     @MainThread
     void unregisterApp() {
         if (proxy != null && registered) {
@@ -156,6 +161,7 @@ public class HidDeviceApp
         this.device = device;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     @MainThread
     public void sendGamepad(GamepadState state) {
@@ -166,6 +172,7 @@ public class HidDeviceApp
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     @MainThread
     public void sendBatteryLevel(float level) {
@@ -194,6 +201,7 @@ public class HidDeviceApp
         });
     }
 
+    @SuppressLint("MissingPermission")
     @BinderThread
     private boolean replyReport(BluetoothDevice device, byte type, byte id) {
         @Nullable byte[] report = getReport(id);

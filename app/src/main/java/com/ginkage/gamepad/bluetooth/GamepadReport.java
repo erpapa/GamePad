@@ -20,10 +20,15 @@ import java.util.Arrays;
 
 /** Helper class to store the gamepad state and retrieve the binary report. */
 class GamepadReport {
-    private final byte[] gamepadData = "BDLLRRTT".getBytes();
+    private final byte[] gamepadData = {
+            (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
+            (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
+            (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
+            (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
+    };
 
     GamepadReport() {
-        Arrays.fill(gamepadData, (byte) 0);
+        Arrays.fill(gamepadData, (byte) 0x0);
     }
 
     /**
@@ -32,29 +37,47 @@ class GamepadReport {
      * @param s The gamepad state to serialize
      */
     byte[] setValue(GamepadState s) {
-        // 11 buttons: A, B, X, Y, L1, R1, L3, R3, Power, Back, Home (1 bit per button), 1 bit padding
-        // 4 bits for D-pad rotation values 0-7 -> 0-315 (360 - 45)
-        // 6x 8-bit values for LX/LY, RX/RY, L2/R2
-        gamepadData[0] = 0;
-        gamepadData[0] |= (byte) (s.a ? 0x01 : 0);
-        gamepadData[0] |= (byte) (s.b ? 0x02 : 0);
-        gamepadData[0] |= (byte) (s.x ? 0x04 : 0);
-        gamepadData[0] |= (byte) (s.y ? 0x08 : 0);
-        gamepadData[0] |= (byte) (s.l1 ? 0x10 : 0);
-        gamepadData[0] |= (byte) (s.r1 ? 0x20 : 0);
-        gamepadData[0] |= (byte) (s.l3 ? 0x40 : 0);
-        gamepadData[0] |= (byte) (s.r3 ? 0x80 : 0);
-        gamepadData[1] = 0;
-        gamepadData[1] |= (byte) (s.start ? 0x01 : 0);
-        gamepadData[1] |= (byte) (s.back ? 0x02 : 0);
-        gamepadData[1] |= (byte) (s.home ? 0x04 : 0);
-        gamepadData[1] |= (byte) (s.dpad << 4);
-        gamepadData[2] = (byte) s.lx;
-        gamepadData[3] = (byte) s.ly;
-        gamepadData[4] = (byte) s.rx;
-        gamepadData[5] = (byte) s.ry;
-        gamepadData[6] = (byte) s.l2;
-        gamepadData[7] = (byte) s.r2;
+        // Pointer (x,y,x,rz) 4 x 16-bit
+        // Brake 10-bit + 6-bit
+        // Accelerator 10-bit + 6-bit
+        // HatSwitch 4-bit + 4-bit
+        // Buttons (A, B, X, Y, L1, R1, L2, R2, View, Menu, L3, R3, Up, Down, Left, Right, home) 15-bit + 1-bit
+        // Record 1-bit + 7-bit
+
+        gamepadData[0] = (byte) (s.lx & 0xFF);
+        gamepadData[1] = (byte) ((s.lx & 0xFF00) >> 8);
+        gamepadData[2] = (byte) (s.ly & 0xFF);
+        gamepadData[3] = (byte) ((s.ly & 0xFF00) >> 8);
+        gamepadData[4] = (byte) (s.rx & 0xFF);
+        gamepadData[5] = (byte) ((s.rx & 0xFF00) >> 8);
+        gamepadData[6] = (byte) (s.ry & 0xFF);
+        gamepadData[7] = (byte) ((s.ry & 0xFF00) >> 8);
+        gamepadData[8] = (byte) (s.l2 & 0xFF);
+        gamepadData[9] = (byte) ((s.l2 & 0xFF00) >> 8);
+        gamepadData[10] = (byte) (s.r2 & 0xFF);
+        gamepadData[11] = (byte) ((s.r2 & 0xFF00) >> 8);
+        gamepadData[12] = (byte) (s.dpad & 0xFF);
+
+        gamepadData[13] = 0;
+        gamepadData[13] |= (byte) (s.a ? 0x01 : 0);
+        gamepadData[13] |= (byte) (s.b ? 0x02 : 0);
+        gamepadData[13] |= (byte) (s.x ? 0x04 : 0);
+        gamepadData[13] |= (byte) (s.y ? 0x08 : 0);
+        gamepadData[13] |= (byte) (s.l1 ? 0x10 : 0);
+        gamepadData[13] |= (byte) (s.r1 ? 0x20 : 0);
+        // gamepadData[13] |= (byte) (s.l2 ? 0x40 : 0);
+        // gamepadData[13] |= (byte) (s.r2 ? 0x80 : 0);
+
+        gamepadData[14] = 0;
+        gamepadData[14] |= (byte) (s.view ? 0x01 : 0);
+        gamepadData[14] |= (byte) (s.menu ? 0x02 : 0);
+        gamepadData[14] |= (byte) (s.l3 ? 0x04 : 0);
+        gamepadData[14] |= (byte) (s.r3 ? 0x08 : 0);
+        gamepadData[14] |= (byte) (s.home ? 0x40 : 0);
+
+        gamepadData[15] = 0;
+        gamepadData[15] |= (byte) (s.record ? 0x01 : 0);
+
         return gamepadData;
     }
 

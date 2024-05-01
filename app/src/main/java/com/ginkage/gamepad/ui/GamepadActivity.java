@@ -23,6 +23,8 @@ import android.os.Bundle;
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +35,7 @@ import com.ginkage.gamepad.bluetooth.GamepadState;
 import com.ginkage.gamepad.bluetooth.HidDataSender;
 
 public class GamepadActivity extends AppCompatActivity {
-    private static final int[] eightWay = {2, 1, 1, 0, 0, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2};
+    private static final int[] eightWay = {3, 2, 2, 1, 1, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3};
 
     private final GamepadState gamepadState = new GamepadState();
     private HidDataSender hidDataSender;
@@ -75,9 +77,10 @@ public class GamepadActivity extends AppCompatActivity {
         Button buttonR1 = findViewById(R.id.button_r1);
         Button buttonL3 = findViewById(R.id.button_l3);
         Button buttonR3 = findViewById(R.id.button_r3);
-        Button buttonStart = findViewById(R.id.button_start);
-        Button buttonBack = findViewById(R.id.button_back);
+        Button buttonView = findViewById(R.id.button_view);
+        Button buttonMenu = findViewById(R.id.button_menu);
         Button buttonHome = findViewById(R.id.button_home);
+        Button buttonRecord = findViewById(R.id.button_record);
         ImageView dPad = findViewById(R.id.dpad);
         ImageView stickLeft = findViewById(R.id.stick_left);
         ImageView stickRight = findViewById(R.id.stick_right);
@@ -92,9 +95,10 @@ public class GamepadActivity extends AppCompatActivity {
         buttonR1.setOnTouchListener(this::onTouchButton);
         buttonL3.setOnTouchListener(this::onTouchButton);
         buttonR3.setOnTouchListener(this::onTouchButton);
-        buttonStart.setOnTouchListener(this::onTouchButton);
-        buttonBack.setOnTouchListener(this::onTouchButton);
+        buttonView.setOnTouchListener(this::onTouchButton);
+        buttonMenu.setOnTouchListener(this::onTouchButton);
         buttonHome.setOnTouchListener(this::onTouchButton);
+        buttonRecord.setOnTouchListener(this::onTouchButton);
 
         dPad.setOnTouchListener(this::onTouchStick);
         stickLeft.setOnTouchListener(this::onTouchStick);
@@ -114,7 +118,10 @@ public class GamepadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        Vibrator vibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
+                        vibrator.vibrate(30);
+                    }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -147,6 +154,10 @@ public class GamepadActivity extends AppCompatActivity {
         int action = event.getActionMasked();
         boolean state =
                 !(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP);
+        if (action == MotionEvent.ACTION_DOWN) {
+            Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
+            vibrator.vibrate(30);
+        }
         int id = v.getId();
         if (id == R.id.button_a) {
             gamepadState.a = state;
@@ -164,15 +175,17 @@ public class GamepadActivity extends AppCompatActivity {
             gamepadState.l3 = state;
         } else if (id == R.id.button_r3) {
             gamepadState.r3 = state;
-        } else if (id == R.id.button_start) {
-            gamepadState.start = state;
-        } else if (id == R.id.button_back) {
-            gamepadState.back = state;
+        } else if (id == R.id.button_view) {
+            gamepadState.view = state;
+        } else if (id == R.id.button_menu) {
+            gamepadState.menu = state;
         } else if (id == R.id.button_home) {
             gamepadState.home = state;
-      } else {
+        } else if (id == R.id.button_record) {
+            gamepadState.record = state;
+        } else {
             return false;
-      }
+        }
         send();
         return true;
     }
@@ -186,6 +199,10 @@ public class GamepadActivity extends AppCompatActivity {
 
         boolean state =
                 !(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP);
+        if (action == MotionEvent.ACTION_DOWN) {
+            Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
+            vibrator.vibrate(30);
+        }
         int id = v.getId();
         if (id == R.id.dpad) {
             if (state) {
@@ -200,25 +217,27 @@ public class GamepadActivity extends AppCompatActivity {
                 int area = (int) (theta / (Math.PI / 8));
                 gamepadState.dpad = eightWay[area];
             } else {
-                gamepadState.dpad = 8;
+                gamepadState.dpad = 0;
             }
         } else if (id == R.id.stick_left) {
             if (state) {
-                gamepadState.lx = Math.round(255 * x / w);
-                gamepadState.ly = Math.round(255 * y / h);
+                gamepadState.lx = Math.round(65535 * x / w);
+                gamepadState.ly = Math.round(65535 * y / h);
             } else {
-                gamepadState.lx = gamepadState.ly = 128;
+                gamepadState.lx = 32768;
+                gamepadState.ly = 32768;
             }
         } else if (id == R.id.stick_right) {
             if (state) {
-                gamepadState.rx = Math.round(255 * x / w);
-                gamepadState.ry = Math.round(255 * y / h);
+                gamepadState.rx = Math.round(65535 * x / w);
+                gamepadState.ry = Math.round(65535 * y / h);
             } else {
-                gamepadState.rx = gamepadState.ry = 128;
+                gamepadState.rx = 32768;
+                gamepadState.ry = 32768;
             }
-      } else {
+        } else {
             return false;
-      }
+        }
 
         send();
         return true;

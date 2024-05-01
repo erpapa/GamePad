@@ -26,9 +26,10 @@ public class GamepadState {
     public boolean r1;
     public boolean l3;
     public boolean r3;
-    public boolean start;
-    public boolean back;
+    public boolean view;
+    public boolean menu;
     public boolean home;
+    public boolean record;
 
     // 0=up, 2=right, 4=down, 6=left, 8=release
     public int dpad;

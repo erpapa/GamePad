@@ -45,7 +45,7 @@
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
-      android:max="255"
+      android:max="1023"
       android:progress="0"
       android:rotation="180"
       app:layout_constraintBottom_toTopOf="@+id/guideline_h25"
@@ -61,7 +61,7 @@
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
-      android:max="255"
+      android:max="1023"
       android:progress="0"
       app:layout_constraintBottom_toTopOf="@+id/guideline_h25"
       app:layout_constraintEnd_toStartOf="@+id/guideline_vert_75"
@@ -248,6 +248,12 @@
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.84"/>
   <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline_h10"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.1"/>
+  <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline_h25"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -267,26 +273,26 @@
       app:layout_constraintGuide_percent="0.5833"/>
 
   <Button
-      android:id="@+id/button_back"
+      android:id="@+id/button_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:layout_marginBottom="16dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      android:text="Back"
+      android:text="View"
       app:layout_constraintBottom_toTopOf="@+id/guideline_horz"
       app:layout_constraintEnd_toStartOf="@+id/guideline_vb1"
       app:layout_constraintStart_toStartOf="@+id/guideline_vert_25"
       app:layout_constraintTop_toTopOf="@+id/guideline_h25"/>
 
   <Button
-      android:id="@+id/button_start"
+      android:id="@+id/button_record"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:layout_marginBottom="16dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      android:text="Start"
+      android:text="Record"
       app:layout_constraintBottom_toTopOf="@+id/guideline_horz"
       app:layout_constraintEnd_toStartOf="@+id/guideline_vb2"
       app:layout_constraintStart_toStartOf="@+id/guideline_vb1"
@@ -296,10 +302,23 @@
       android:id="@+id/button_home"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginTop="0dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:text="Home"
+      app:layout_constraintBottom_toTopOf="@+id/guideline_h10"
+      app:layout_constraintEnd_toStartOf="@+id/guideline_vb2"
+      app:layout_constraintStart_toStartOf="@+id/guideline_vb1"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+  <Button
+      android:id="@+id/button_menu"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:text="Menu"
       app:layout_constraintBottom_toTopOf="@+id/guideline_horz"
       app:layout_constraintEnd_toStartOf="@+id/guideline_vert_75"
       app:layout_constraintStart_toStartOf="@+id/guideline_vb2"

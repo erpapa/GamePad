@@ -18,6 +18,7 @@ package com.ginkage.gamepad.bluetooth;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHidDevice;
@@ -64,6 +65,7 @@ public class HidDeviceProfile {
      * @param device Device to check.
      * @return {@code true} if the HID Host profile is supported, {@code false} otherwise.
      */
+    @SuppressLint("MissingPermission")
     public boolean isProfileSupported(BluetoothDevice device) {
         // If a device reports itself as a HID Device, then it isn't a HID Host.
         ParcelUuid[] uuidArray = device.getUuids();
@@ -111,6 +113,7 @@ public class HidDeviceProfile {
      * @param device Remote Bluetooth device to examine.
      * @return A Bluetooth profile connection state.
      */
+    @SuppressLint("MissingPermission")
     public int getConnectionState(BluetoothDevice device) {
         if (service == null) {
             return BluetoothProfile.STATE_DISCONNECTED;
@@ -123,6 +126,7 @@ public class HidDeviceProfile {
      *
      * @param device Device to connect to.
      */
+    @SuppressLint("MissingPermission")
     @MainThread
     void connect(BluetoothDevice device) {
         if (service != null && isProfileSupported(device)) {
@@ -135,6 +139,7 @@ public class HidDeviceProfile {
      *
      * @param device Device to disconnect from.
      */
+    @SuppressLint("MissingPermission")
     @MainThread
     void disconnect(BluetoothDevice device) {
         if (service != null && isProfileSupported(device)) {
@@ -147,6 +152,7 @@ public class HidDeviceProfile {
      *
      * @return Connected devices list.
      */
+    @SuppressLint("MissingPermission")
     @MainThread
     List<BluetoothDevice> getConnectedDevices() {
         if (service == null) {
@@ -161,6 +167,7 @@ public class HidDeviceProfile {
      * @param states List of states we are interested in.
      * @return List of devices that match one of the states.
      */
+    @SuppressLint("MissingPermission")
     @MainThread
     List<BluetoothDevice> getDevicesMatchingConnectionStates(int[] states) {
         if (service == null) {
