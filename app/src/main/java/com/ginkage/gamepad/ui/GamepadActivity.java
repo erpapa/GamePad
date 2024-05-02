@@ -24,6 +24,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,8 +39,23 @@ public class GamepadActivity extends AppCompatActivity {
     private static final int[] eightWay = {3, 2, 2, 1, 1, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3};
 
     private final GamepadState gamepadState = new GamepadState();
+
+    private Vibrator hidVibrator;
+
     private HidDataSender hidDataSender;
+
     private HidDataSender.ProfileListener profileListener = new HidDataSender.ProfileListener() {
+        @Override
+        @MainThread
+        public void onServiceStateChanged(BluetoothHidDevice proxy) {}
+
+        @Override
+        @MainThread
+        public void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered) {
+            if (!registered) {
+                finish();
+            }
+        }
         @Override
         @MainThread
         public void onConnectionStateChanged(BluetoothDevice device, int state) {
@@ -50,15 +66,33 @@ public class GamepadActivity extends AppCompatActivity {
 
         @Override
         @MainThread
-        public void onAppStatusChanged(boolean registered) {
-            if (!registered) {
-                finish();
-            }
-        }
+        public void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize) {}
 
         @Override
         @MainThread
-        public void onServiceStateChanged(BluetoothHidDevice proxy) {}
+        public void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {}
+
+        @Override
+        @MainThread
+        public void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {
+            if (data == null || data.length == 0) {
+                return;
+            }
+            byte enable = data[0];
+            if (enable <= 0) {
+                return;
+            }
+            if (data.length >= 8) {
+                int magnitude = (data[1] & 0xFF + data[2] & 0xFF + data[3] & 0xFF + data[4] & 0xFF) / 4;
+                int amplitude = (int) (255 * (magnitude / 100.0));
+                int duration = (int) ((data[5] & 0xFF) * 10); // ms
+                int startDelay = (int) ((data[6] & 0xFF) * 10); // ms
+                int loopCount = (int) (data[7] & 0xFF);
+                GamepadActivity.this.vibrateWaveform(amplitude, duration, startDelay, loopCount);
+            } else {
+                GamepadActivity.this.vibrateOneShot();
+            }
+        }
     };
 
     @Override
@@ -119,8 +153,7 @@ public class GamepadActivity extends AppCompatActivity {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-                        Vibrator vibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
-                        vibrator.vibrate(30);
+                        GamepadActivity.this.vibrateOneShot();
                     }
 
                     @Override
@@ -148,6 +181,42 @@ public class GamepadActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         hidDataSender.unregister(this, profileListener);
+        if (hidVibrator != null) {
+            hidVibrator.cancel();
+        }
+    }
+
+    public void vibrateOneShot() {
+        if (hidVibrator != null) {
+            hidVibrator.cancel();
+        }
+        VibrationEffect effect = VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE);        hidVibrator.cancel();
+        hidVibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
+        hidVibrator.vibrate(effect);
+    }
+
+    public void vibrateWaveform(int amplitude, int duration, int startDelay, int loopCount) {
+        if (amplitude < 0 || duration < 0 || startDelay < 0) {
+            return;
+        }
+        if (hidVibrator != null) {
+            hidVibrator.cancel();
+        }
+        int count = (loopCount + 1) * 2;
+        long[] timings = new long[count];
+        int[] amplitudes = new int[count];
+        for (int index = 0; index < count; index++) {
+            if (index % 2 == 0) {
+                timings[index] = loopCount > 0 ? startDelay : duration;
+                amplitudes[index] = loopCount > 0 ? 0 : amplitude;
+            } else {
+                timings[index] = duration;
+                amplitudes[index] = amplitude;
+            }
+        }
+        VibrationEffect effect = VibrationEffect.createWaveform(timings, amplitudes, -1);
+        hidVibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
+        hidVibrator.vibrate(effect);
     }
 
     public boolean onTouchButton(View v, MotionEvent event) {
@@ -155,8 +224,7 @@ public class GamepadActivity extends AppCompatActivity {
         boolean state =
                 !(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP);
         if (action == MotionEvent.ACTION_DOWN) {
-            Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
-            vibrator.vibrate(30);
+            vibrateOneShot();
         }
         int id = v.getId();
         if (id == R.id.button_a) {
@@ -200,8 +268,7 @@ public class GamepadActivity extends AppCompatActivity {
         boolean state =
                 !(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP);
         if (action == MotionEvent.ACTION_DOWN) {
-            Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
-            vibrator.vibrate(30);
+            vibrateOneShot();
         }
         int id = v.getId();
         if (id == R.id.dpad) {

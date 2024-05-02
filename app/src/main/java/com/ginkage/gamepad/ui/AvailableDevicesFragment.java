@@ -328,6 +328,14 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
 
                 @Override
                 @MainThread
+                public void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered) {
+                    if (!registered) {
+                        getActivity().finish();
+                    }
+                }
+
+                @Override
+                @MainThread
                 public void onConnectionStateChanged(BluetoothDevice device, int state) {
                     final BluetoothDevicePreference pref = findOrAllocateDevicePreference(device);
                     pref.updateProfileConnectionState();
@@ -335,11 +343,15 @@ public class AvailableDevicesFragment extends PreferenceFragmentCompat {
 
                 @Override
                 @MainThread
-                public void onAppStatusChanged(boolean registered) {
-                    if (!registered) {
-                        getActivity().finish();
-                    }
-                }
+                public void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize) {}
+
+                @Override
+                @MainThread
+                public void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {}
+
+                @Override
+                @MainThread
+                public void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {}
             };
 
     /**

@@ -120,56 +120,56 @@ class Constants {
             (byte) 0x95, (byte) 0x01,        //   Report Count (1)
             (byte) 0x81, (byte) 0x03,        //   Input (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
 
-//            // Force feedback and related devices
-//            (byte) 0x05, (byte) 0x0F,        //   Usage Page (PID Page)
-//            (byte) 0x09, (byte) 0x21,        //   Usage ((byte) 0x21)
-//            (byte) 0x85, ID_FEEDBACK,        //   Report ID (3)
-//            (byte) 0xA1, (byte) 0x02,        //   Collection (Logical)
-//            (byte) 0x09, (byte) 0x97,        //     Usage ((byte) 0x97)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x25, (byte) 0x01,        //     Logical Maximum (1)
-//            (byte) 0x75, (byte) 0x04,        //     Report Size (4)
-//            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
-//            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x25, (byte) 0x00,        //     Logical Maximum (0)
-//            (byte) 0x75, (byte) 0x04,        //     Report Size (4)
-//            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
-//            (byte) 0x91, (byte) 0x03,        //     Output (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0x09, (byte) 0x70,        //     Usage ((byte) 0x70)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x25, (byte) 0x64,        //     Logical Maximum (100)
-//            (byte) 0x75, (byte) 0x08,        //     Report Size (8)
-//            (byte) 0x95, (byte) 0x04,        //     Report Count (4)
-//            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0x09, (byte) 0x50,        //     Usage ((byte) 0x50)
-//            (byte) 0x66, (byte) 0x01, (byte) 0x10,  //     Unit (System: SI Linear, Time: Seconds)
-//            (byte) 0x55, (byte) 0x0E,        //     Unit Exponent (-2)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
-//            (byte) 0x75, (byte) 0x08,        //     Report Size (8)
-//            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
-//            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0x09, (byte) 0xA7,        //     Usage ((byte) 0xA7)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
-//            (byte) 0x75, (byte) 0x08,        //     Report Size (8)
-//            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
-//            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0x65, (byte) 0x00,        //     Unit (None)
-//            (byte) 0x55, (byte) 0x00,        //     Unit Exponent (0)
-//            (byte) 0x09, (byte) 0x7C,        //     Usage ((byte) 0x7C)
-//            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
-//            (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
-//            (byte) 0x75, (byte) 0x08,        //     Report Size (8)
-//            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
-//            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-//            (byte) 0xC0,                     //   End Collection
+            // Force feedback and related devices
+            (byte) 0x85, ID_FEEDBACK,        //   Report ID (3)
+            (byte) 0x05, (byte) 0x0F,        //   Usage Page (PID Page)
+            (byte) 0x09, (byte) 0x21,        //   Usage ((byte) 0x21)
+            (byte) 0xA1, (byte) 0x02,        //   Collection (Logical)
+            (byte) 0x09, (byte) 0x97,        //     Usage ((byte) 0x97)
+            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            (byte) 0x25, (byte) 0x01,        //     Logical Maximum (1)
+            (byte) 0x75, (byte) 0x04,        //     Report Size (4)
+            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
+            (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            (byte) 0x25, (byte) 0x00,        //     Logical Maximum (0)
+            (byte) 0x75, (byte) 0x04,        //     Report Size (4)
+            (byte) 0x95, (byte) 0x01,        //     Report Count (1)
+            (byte) 0x91, (byte) 0x03,        //     Output (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            // (byte) 0x09, (byte) 0x70,        //     Usage ((byte) 0x70)
+            // (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            // (byte) 0x25, (byte) 0x64,        //     Logical Maximum (100)
+            // (byte) 0x75, (byte) 0x08,        //     Report Size (8)
+            // (byte) 0x95, (byte) 0x04,        //     Report Count (4)
+            // (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            // (byte) 0x09, (byte) 0x50,        //     Usage ((byte) 0x50)
+            // (byte) 0x66, (byte) 0x01, (byte) 0x10,  //     Unit (System: SI Linear, Time: Seconds)
+            // (byte) 0x55, (byte) 0x0E,        //     Unit Exponent (-2)
+            // (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            // (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
+            // (byte) 0x75, (byte) 0x08,        //     Report Size (8)
+            // (byte) 0x95, (byte) 0x01,        //     Report Count (1)
+            // (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            // (byte) 0x09, (byte) 0xA7,        //     Usage ((byte) 0xA7)
+            // (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            // (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
+            // (byte) 0x75, (byte) 0x08,        //     Report Size (8)
+            // (byte) 0x95, (byte) 0x01,        //     Report Count (1)
+            // (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            // (byte) 0x65, (byte) 0x00,        //     Unit (None)
+            // (byte) 0x55, (byte) 0x00,        //     Unit Exponent (0)
+            // (byte) 0x09, (byte) 0x7C,        //     Usage ((byte) 0x7C)
+            // (byte) 0x15, (byte) 0x00,        //     Logical Minimum (0)
+            // (byte) 0x26, (byte) 0xFF, (byte) 0x00,  //     Logical Maximum (255)
+            // (byte) 0x75, (byte) 0x08,        //     Report Size (8)
+            // (byte) 0x95, (byte) 0x01,        //     Report Count (1)
+            // (byte) 0x91, (byte) 0x02,        //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+            (byte) 0xC0,                     //   End Collection
 
             // Battery level, 1 byte, 0-FF
+            (byte) 0x85, ID_BATTERY,         //   Report ID
             (byte) 0x05, (byte) 0x06,        //   Usage Page (Generic Dev Ctrls)
             (byte) 0x09, (byte) 0x20,        //   Usage (Battery Strength)
-            (byte) 0x85, ID_BATTERY,         //   Report ID
             (byte) 0x15, (byte) 0x00,        //   Logical Minimum (0)
             (byte) 0x26, (byte) 0xFF, (byte) 0x00, //   Logical Maximum (255)
             (byte) 0x75, (byte) 0x08,        //   Report Size (8)
@@ -179,6 +179,7 @@ class Constants {
     };
 
     /**
+     * HID report descriptor for a gamepad.
      * typedef struct
      * {
      *   uint8_t  reportId;                                 // Report ID = 0x01 (1)
@@ -213,7 +214,7 @@ class Constants {
      *   uint8_t  CD_GamePadRecord : 1;                     // Usage 0x000C00B2: Record, Value = 0 to 1
      *   uint8_t  : 7;                                      // Pad
      * } inputReport01_t;
-     *
+     * *****************************************************************************************************
      * typedef struct
      * {
      *   uint8_t  reportId;                                 // Report ID = 0x03 (3)

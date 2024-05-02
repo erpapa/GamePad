@@ -53,7 +53,7 @@ public class HidDataSender implements GamepadReport.GamepadDataSender {
                             if (isAppRegistered) {
                                 // Service has disconnected before we could unregister the app.
                                 // Notify listeners, update the UI and internal state.
-                                onAppStatusChanged(false);
+                                onAppStatusChanged(null, false);
                             }
                         } else {
                             hidDeviceApp.registerApp(proxy);
@@ -61,6 +61,26 @@ public class HidDataSender implements GamepadReport.GamepadDataSender {
                         updateDeviceList();
                         for (ProfileListener listener : listeners) {
                             listener.onServiceStateChanged(proxy);
+                        }
+                    }
+                }
+
+                @Override
+                @MainThread
+                public void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered) {
+                    synchronized (lock) {
+                        if (isAppRegistered == registered) {
+                            // We are already in the correct state.
+                            return;
+                        }
+                        isAppRegistered = registered;
+
+                        for (ProfileListener listener : listeners) {
+                            listener.onAppStatusChanged(pluggedDevice, registered);
+                        }
+                        if (registered && waitingForDevice != null) {
+                            // Fulfill the postponed request to connect.
+                            requestConnect(waitingForDevice);
                         }
                     }
                 }
@@ -90,21 +110,25 @@ public class HidDataSender implements GamepadReport.GamepadDataSender {
 
                 @Override
                 @MainThread
-                public void onAppStatusChanged(boolean registered) {
-                    synchronized (lock) {
-                        if (isAppRegistered == registered) {
-                            // We are already in the correct state.
-                            return;
-                        }
-                        isAppRegistered = registered;
+                public void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize) {
+                    for (ProfileListener listener : listeners) {
+                        listener.onGetReport(device, type, id, bufferSize);
+                    }
+                }
 
-                        for (ProfileListener listener : listeners) {
-                            listener.onAppStatusChanged(registered);
-                        }
-                        if (registered && waitingForDevice != null) {
-                            // Fulfill the postponed request to connect.
-                            requestConnect(waitingForDevice);
-                        }
+                @Override
+                @MainThread
+                public void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {
+                    for (ProfileListener listener : listeners) {
+                        listener.onSetReport(device, type, id, data);
+                    }
+                }
+
+                @Override
+                @MainThread
+                public void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {
+                    for (ProfileListener listener : listeners) {
+                        listener.onInterruptData(device, reportId, data);
                     }
                 }
             };

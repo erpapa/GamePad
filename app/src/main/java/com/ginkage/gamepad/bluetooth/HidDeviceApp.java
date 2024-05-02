@@ -38,6 +38,10 @@ public class HidDeviceApp
 
     /** Used to call back when a device connection state has changed. */
     public interface DeviceStateListener {
+        /** Callback that receives the app unregister event. */
+        @MainThread
+        void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered);
+
         /**
          * Callback that receives the new device connection state.
          *
@@ -47,9 +51,14 @@ public class HidDeviceApp
         @MainThread
         void onConnectionStateChanged(BluetoothDevice device, int state);
 
-        /** Callback that receives the app unregister event. */
         @MainThread
-        void onAppStatusChanged(boolean registered);
+        void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize);
+
+        @MainThread
+        void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data);
+
+        @MainThread
+        void onInterruptData(BluetoothDevice device, byte reportId, byte[] data);
     }
 
     private final GamepadReport gamepadReport = new GamepadReport();
@@ -58,6 +67,8 @@ public class HidDeviceApp
 
     @Nullable private BluetoothDevice device;
     @Nullable private DeviceStateListener deviceStateListener;
+    @Nullable private BluetoothHidDevice proxy;
+    private boolean registered;
 
     /** Callback to receive the HID Device's SDP record state. */
     private final BluetoothHidDevice.Callback callback =
@@ -67,7 +78,7 @@ public class HidDeviceApp
                 public void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered) {
                     super.onAppStatusChanged(pluggedDevice, registered);
                     HidDeviceApp.this.registered = registered;
-                    HidDeviceApp.this.onAppStatusChanged(registered);
+                    HidDeviceApp.this.onAppStatusChanged(pluggedDevice, registered);
                 }
 
                 @Override
@@ -77,36 +88,31 @@ public class HidDeviceApp
                     HidDeviceApp.this.onConnectionStateChanged(device, state);
                 }
 
-                @SuppressLint("MissingPermission")
                 @Override
                 @BinderThread
                 public void onGetReport(
                         BluetoothDevice device, byte type, byte id, int bufferSize) {
                     super.onGetReport(device, type, id, bufferSize);
-                    if (proxy != null) {
-                        if (type != BluetoothHidDevice.REPORT_TYPE_INPUT) {
-                            proxy.reportError(
-                                    device, BluetoothHidDevice.ERROR_RSP_UNSUPPORTED_REQ);
-                        } else if (!replyReport(device, type, id)) {
-                            proxy.reportError(
-                                    device, BluetoothHidDevice.ERROR_RSP_INVALID_RPT_ID);
-                        }
-                    }
+                    Log.d(TAG, "onGetReport: type=" + type + ", id=" + id);
+                    HidDeviceApp.this.onGetReport(device, type, id, bufferSize);
                 }
 
-                @SuppressLint("MissingPermission")
                 @Override
                 @BinderThread
                 public void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {
                     super.onSetReport(device, type, id, data);
-                    if (proxy != null) {
-                        proxy.reportError(device, BluetoothHidDevice.ERROR_RSP_SUCCESS);
-                    }
+                    Log.d(TAG, "onSetReport: type=" + type + ", id=" + id);
+                    HidDeviceApp.this.onSetReport(device, type, id, data);
+                }
+
+                @Override
+                @BinderThread
+                public void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {
+                    super.onInterruptData(device, reportId, data);
+                    Log.d(TAG, "onInterruptData: reportId=" + reportId);
+                    HidDeviceApp.this.onInterruptData(device, reportId, data);
                 }
             };
-
-    @Nullable private BluetoothHidDevice proxy;
-    private boolean registered;
 
     /**
      * Register the HID Device's SDP record.
@@ -193,10 +199,49 @@ public class HidDeviceApp
     }
 
     @BinderThread
-    private void onAppStatusChanged(boolean registered) {
+    private void onAppStatusChanged(BluetoothDevice pluggedDevice, boolean registered) {
         mainThreadHandler.post(() -> {
             if (deviceStateListener != null) {
-                deviceStateListener.onAppStatusChanged(registered);
+                deviceStateListener.onAppStatusChanged(pluggedDevice, registered);
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    @BinderThread
+    private void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize) {
+        if (proxy != null) {
+            if (type != BluetoothHidDevice.REPORT_TYPE_INPUT) {
+                proxy.reportError(device, BluetoothHidDevice.ERROR_RSP_UNSUPPORTED_REQ);
+            } else if (!replyReport(device, type, id)) {
+                proxy.reportError( device, BluetoothHidDevice.ERROR_RSP_INVALID_RPT_ID);
+            }
+        }
+        mainThreadHandler.post(() -> {
+            if (deviceStateListener != null) {
+                deviceStateListener.onGetReport(device, type, id, bufferSize);
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    @BinderThread
+    private void onSetReport(BluetoothDevice device, byte type, byte id, byte[] data) {
+        if (proxy != null) {
+            proxy.reportError(device, BluetoothHidDevice.ERROR_RSP_SUCCESS);
+        }
+        mainThreadHandler.post(() -> {
+            if (deviceStateListener != null) {
+                deviceStateListener.onSetReport(device, type, id, data);
+            }
+        });
+    }
+
+    @BinderThread
+    private void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {
+        mainThreadHandler.post(() -> {
+            if (deviceStateListener != null) {
+                deviceStateListener.onInterruptData(device, reportId, data);
             }
         });
     }

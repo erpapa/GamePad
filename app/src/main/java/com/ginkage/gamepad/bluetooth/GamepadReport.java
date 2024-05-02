@@ -27,7 +27,7 @@ class GamepadReport {
             (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
     };
 
-    GamepadReport() {
+    public GamepadReport() {
         Arrays.fill(gamepadData, (byte) 0x0);
     }
 
@@ -61,19 +61,17 @@ class GamepadReport {
         gamepadData[13] = 0;
         gamepadData[13] |= (byte) (s.a ? 0x01 : 0);
         gamepadData[13] |= (byte) (s.b ? 0x02 : 0);
-        gamepadData[13] |= (byte) (s.x ? 0x04 : 0);
-        gamepadData[13] |= (byte) (s.y ? 0x08 : 0);
-        gamepadData[13] |= (byte) (s.l1 ? 0x10 : 0);
-        gamepadData[13] |= (byte) (s.r1 ? 0x20 : 0);
-        // gamepadData[13] |= (byte) (s.l2 ? 0x40 : 0);
-        // gamepadData[13] |= (byte) (s.r2 ? 0x80 : 0);
+        gamepadData[13] |= (byte) (s.x ? 0x08 : 0);
+        gamepadData[13] |= (byte) (s.y ? 0x10 : 0);
+        gamepadData[13] |= (byte) (s.l1 ? 0x40 : 0);
+        gamepadData[13] |= (byte) (s.r1 ? 0x80 : 0);
 
         gamepadData[14] = 0;
-        gamepadData[14] |= (byte) (s.view ? 0x01 : 0);
-        gamepadData[14] |= (byte) (s.menu ? 0x02 : 0);
-        gamepadData[14] |= (byte) (s.l3 ? 0x04 : 0);
-        gamepadData[14] |= (byte) (s.r3 ? 0x08 : 0);
-        gamepadData[14] |= (byte) (s.home ? 0x40 : 0);
+        gamepadData[14] |= (byte) (s.view ? 0x04 : 0);
+        gamepadData[14] |= (byte) (s.menu ? 0x08 : 0);
+        gamepadData[14] |= (byte) (s.home ? 0x10 : 0);
+        gamepadData[14] |= (byte) (s.l3 ? 0x20 : 0);
+        gamepadData[14] |= (byte) (s.r3 ? 0x40 : 0);
 
         gamepadData[15] = 0;
         gamepadData[15] |= (byte) (s.record ? 0x01 : 0);
