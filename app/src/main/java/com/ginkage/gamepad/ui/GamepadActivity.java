@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import com.ginkage.gamepad.R;
+import com.ginkage.gamepad.bluetooth.Constants;
 import com.ginkage.gamepad.bluetooth.GamepadState;
 import com.ginkage.gamepad.bluetooth.HidDataSender;
 
@@ -75,11 +76,14 @@ public class GamepadActivity extends AppCompatActivity {
         @Override
         @MainThread
         public void onInterruptData(BluetoothDevice device, byte reportId, byte[] data) {
+            if (reportId != Constants.ID_FEEDBACK) {
+                return;
+            }
             if (data == null || data.length == 0) {
                 return;
             }
-            byte enable = data[0];
-            if (enable <= 0) {
+            if (data[0] == 0) {
+                GamepadActivity.this.vibrateCancel();
                 return;
             }
             if (data.length >= 8) {
@@ -186,21 +190,26 @@ public class GamepadActivity extends AppCompatActivity {
         }
     }
 
-    public void vibrateOneShot() {
+    public void vibrateCancel() {
         if (hidVibrator != null) {
             hidVibrator.cancel();
         }
-        VibrationEffect effect = VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE);        hidVibrator.cancel();
+    }
+
+    public void vibrateStart(VibrationEffect effect) {
+        vibrateCancel();
         hidVibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
         hidVibrator.vibrate(effect);
     }
 
+    public void vibrateOneShot() {
+        VibrationEffect effect = VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE);        hidVibrator.cancel();
+        vibrateStart(effect);
+    }
+
     public void vibrateWaveform(int amplitude, int duration, int startDelay, int loopCount) {
-        if (amplitude < 0 || duration < 0 || startDelay < 0) {
+        if (amplitude <= 0 || duration <= 0 || startDelay < 0) {
             return;
-        }
-        if (hidVibrator != null) {
-            hidVibrator.cancel();
         }
         int count = (loopCount + 1) * 2;
         long[] timings = new long[count];
@@ -215,8 +224,7 @@ public class GamepadActivity extends AppCompatActivity {
             }
         }
         VibrationEffect effect = VibrationEffect.createWaveform(timings, amplitudes, -1);
-        hidVibrator = (Vibrator)GamepadActivity.this.getSystemService(GamepadActivity.this.VIBRATOR_SERVICE);
-        hidVibrator.vibrate(effect);
+        vibrateStart(effect);
     }
 
     public boolean onTouchButton(View v, MotionEvent event) {

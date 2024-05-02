@@ -17,7 +17,7 @@
 package com.ginkage.gamepad.bluetooth;
 
 /** Helper class to store the battery state and retrieve the binary report. */
-class BatteryReport {
+public class BatteryReport {
 
     private final byte[] batteryData = new byte[] {0};
 

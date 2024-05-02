@@ -21,10 +21,10 @@ import android.bluetooth.BluetoothHidDeviceAppQosSettings;
 import android.bluetooth.BluetoothHidDeviceAppSdpSettings;
 
 /** Handy constants that are shared between Classic and BLE modes. */
-class Constants {
-    static final byte ID_GAMEPAD = 1;
-    static final byte ID_FEEDBACK = 3;
-    static final byte ID_BATTERY = 4;
+public class Constants {
+    public static final byte ID_GAMEPAD = 1;
+    public static final byte ID_FEEDBACK = 3;
+    public static final byte ID_BATTERY = 4;
 
     // Xbox Wireless Controller (Xbox model 1914)
     private static final byte[] HIDD_REPORT_DESC = {

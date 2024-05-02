@@ -19,7 +19,7 @@ package com.ginkage.gamepad.bluetooth;
 import java.util.Arrays;
 
 /** Helper class to store the gamepad state and retrieve the binary report. */
-class GamepadReport {
+public class GamepadReport {
     private final byte[] gamepadData = {
             (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
             (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
