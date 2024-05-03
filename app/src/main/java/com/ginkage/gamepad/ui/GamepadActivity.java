@@ -184,10 +184,8 @@ public class GamepadActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        vibrateCancel();
         hidDataSender.unregister(this, profileListener);
-        if (hidVibrator != null) {
-            hidVibrator.cancel();
-        }
     }
 
     public void vibrateCancel() {
@@ -203,7 +201,7 @@ public class GamepadActivity extends AppCompatActivity {
     }
 
     public void vibrateOneShot() {
-        VibrationEffect effect = VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE);        hidVibrator.cancel();
+        VibrationEffect effect = VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE);
         vibrateStart(effect);
     }
 
